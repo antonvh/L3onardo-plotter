@@ -5,7 +5,7 @@ This is a collection of python scripts that transform jpg and and svg files into
 The csv file is for use with pybricks/python scripts that can also drive the vertical plotter.
 
 You can build your own vertical plotter with some dental floss and a single kit of LEGO MINDSTORMS EV3, using the [Vertical Plotter Building Instructions](http://antonsmindstorms.com.transurl.nl/product/31313-ev3-vertical-plotter-building-instructions/).
-[![Vertical Plotter Building Instructions](images/building_instructions.jpg)](http://antonsmindstorms.com.transurl.nl/product/31313-ev3-vertical-plotter-building-instructions/)
+[![Vertical Plotter Building Instructions](images/vertical_plotter.jpg)](http://antonsmindstorms.com.transurl.nl/product/31313-ev3-vertical-plotter-building-instructions/)
 
 ## Usage
 I prefer to run my script inside `pipenv shell`. On MacOS I installed pipenv with Homebrew. But you can also just plainly `pip3 install pillow`.
