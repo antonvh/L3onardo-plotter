@@ -20,7 +20,7 @@ Open the script and edit the parameters, and input file names before running the
 ![alt text](https://github.com/antonvh/L3onardo-plotter/blob/master/input/anton.jpg "Original image")
 
 ### Result
-![alt text](https://github.com/antonvh/L3onardo-plotter/blob/master/input/result.jpg "Result")
+![alt text](https://github.com/antonvh/L3onardo-plotter/blob/master/images/result.jpg "Result")
 
 
 ## Generate from SVG ##
