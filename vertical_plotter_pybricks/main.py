@@ -95,6 +95,8 @@ H_MARGIN = (L_ROPE_0 ** 2 - V_MARGIN ** 2) ** 0.5
 CANVAS_SIZE = ATT_DIST - 2 * H_MARGIN
 
 print("postion the robot at 0,0")
+print("use directional buttons on the brick to move it")
+print("press center button when done.")
 while not Button.CENTER in ev3.buttons.pressed():
     if Button.UP in ev3.buttons.pressed():
         mb.run(600)
@@ -113,7 +115,7 @@ mb.reset_angle(0)
 mc.reset_angle(0)
 
 
-print("Loading coordinates")
+print("Starting plot")
 pen.run_until_stalled(-100)
 pen.reset_angle(PEN_DOWN_POS)
 pen_up()
@@ -126,6 +128,6 @@ with open("coords.csv") as coordsfile:
     for line in coordsfile.readlines():
         c = tuple([float(c) for c in line.split(",")])
         move_to_norm_coord(*c)
-# print("Done: ",len(pointlist))
+print("Done")
 pen_up()
 move_to_norm_coord(0,0)
