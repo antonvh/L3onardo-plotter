@@ -4,10 +4,11 @@ __author__ = "Anton's Mindstorms Hacks"
 from PIL import Image, ImageDraw, ImageOps
 from random import randrange
 import time
+import numpy as np
 
 # settings
 NUM_POINTS = 15000
-NUM_CLOSEST = 3000
+# NUM_CLOSEST = 3000
 MAX_BRIGHTNESS = 180    # Ignore pixels brighter than this
 EXPONENT = 1           # Number between 1 and 3 to control grayscale curve
 MAX_LOTTERY = 10        # A lower number means a tendency to pick more dark pixels
@@ -45,24 +46,22 @@ print("Connecting the dots...")
 
 # sort points randomish by vicinity #
 # Very lazy TSP. Slow too. :S
-good_enough = (w * 0.01) ** 2   # Within 1% of the image width is good enough
-
-sorted_pointlist = [pointlist.pop(0)]
-while len(pointlist) > 0:
+# good_enough = (w * 0.01) ** 2   # Within 1% of the image width is good enough
+def get_coord(n, arr):
+    return (tuple(arr[n]),)
+pointlist = np.array(pointlist)
+best = 0
+sorted_pointlist = []
+while len(pointlist) > 1:
+    p=pointlist[best]
+    sorted_pointlist += get_coord(best, pointlist)
+    pointlist = np.delete(pointlist,best,axis=0)
+    
     # get the next set of points (if that many are left)
-    sublist = pointlist[:NUM_CLOSEST]
-    closest_dist = (w * 2) ** 2
-    test_point = sorted_pointlist[-1]
-    for p in sublist:
-        # calculate distance from the test point to the last point in the sorted point list
-        distance = (p[0] - test_point[0]) ** 2 + (p[1] - test_point[1]) ** 2
-        if distance < closest_dist:
-            closest_dist = distance
-            closest = p
-            if distance < good_enough: 
-                break
-    pointlist.remove(closest)
-    sorted_pointlist += [closest]
+    dists = np.sqrt(((pointlist-p)**2).sum(axis=1))
+    best = np.argmin(dists)
+
+sorted_pointlist += get_coord(0, pointlist)
 
 # Preview: draw lines connecting sorted points
 im_result = Image.new("L", im.size, color=200)
