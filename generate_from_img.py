@@ -57,7 +57,7 @@ while len(pointlist) > 1:
     sorted_pointlist += get_coord(best, pointlist)
     pointlist = np.delete(pointlist,best,axis=0)
     
-    # get the next set of points (if that many are left)
+    # Calculate distances of p to all points in pointlist
     dists = np.sqrt(((pointlist-p)**2).sum(axis=1))
     best = np.argmin(dists)
 
