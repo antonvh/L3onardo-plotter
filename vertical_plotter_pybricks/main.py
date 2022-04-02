@@ -59,7 +59,6 @@ def motor_targets_from_coords(x, y):
     # Compensate for changing spindle thickness.
     l_target = (l_rope - L_ROPE_0) * CM_TO_DEG - (l_rope - L_ROPE_0)**3 * 0.00303 
     r_target = (r_rope - R_ROPE_0) * CM_TO_DEG - (r_rope - R_ROPE_0)**3 * 0.00303 
-    print(r_target)
     return int(l_target), int(r_target)
 
 def move_to_norm_coord(x_norm, y_norm, pen=UNCHANGED, brake=False):
