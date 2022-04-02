@@ -15,7 +15,7 @@ from time import sleep_ms
 L_ROPE_0 = 51
 R_ROPE_0 = 79
 ATT_DIST = 90
-CM_TO_DEG = -160
+CM_TO_DEG = -160.5
 PEN_UP_POS = 0
 PEN_DOWN_POS = -90
 UP = 0
