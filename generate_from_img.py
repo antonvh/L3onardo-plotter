@@ -37,16 +37,18 @@ def find_another_dark_pixel(img_px, img_w, img_h):
 
 
 pointlist = []
-
+print("Generating the dots...")
 t = time.time()
 for i in range(NUM_POINTS):
     pointlist += [find_another_dark_pixel(pixels, w, h)]
-print("Generated dots in:", time.time() - t)
-print("Connecting the dots...")
+print("Generated dots in:", time.time() - t, "seconds")
+
 
 # sort points randomish by vicinity #
 # Very lazy TSP. Slow too. :S
 # good_enough = (w * 0.01) ** 2   # Within 1% of the image width is good enough
+print("Connecting the dots...")
+t = time.time()
 def get_coord(n, arr):
     return (tuple(arr[n]),)
 pointlist = np.array(pointlist)
@@ -57,11 +59,13 @@ while len(pointlist) > 1:
     sorted_pointlist += get_coord(best, pointlist)
     pointlist = np.delete(pointlist,best,axis=0)
     
-    # Calculate distances of p to all points in pointlist
-    dists = np.sqrt(((pointlist-p)**2).sum(axis=1))
+    # Calculate the square of the distances of p to all points in pointlist
+    dists = ((pointlist-p)**2).sum(axis=1)
+    # Closest point has the lowest squared distance.
     best = np.argmin(dists)
 
 sorted_pointlist += get_coord(0, pointlist)
+print("Connected the dots in:", time.time() - t, "seconds")
 
 # Preview: draw lines connecting sorted points
 im_result = Image.new("L", im.size, color=200)
