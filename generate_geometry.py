@@ -9,7 +9,7 @@ PREVIEW_SIZE = 500
 CIRCLE = 1
 SQUARE = 2
 GRID = 3
-mode = CIRCLE
+mode = SQUARE
 
 pointlist = []
 
@@ -45,7 +45,7 @@ if mode == GRID:
                 pointlist += [(x, y-step)]
 
 if mode == SQUARE:
-    steps = 3
+    steps = 10
     margin = PREVIEW_SIZE // 10
     step = (PREVIEW_SIZE - 2*margin) // steps
 
