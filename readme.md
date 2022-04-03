@@ -27,18 +27,35 @@ The repository contains three generator scripts. They produce a csv file for use
 The CSV file has normalized coordinates. That means the numbers are between 0.0 and 1.0. When the first coordinate is -1.0, the second coordinate tells the pen to lift (0) or write (1). The python plotting script can also handle 3 long-tuples. So `0.5, 0.5, 1` would tell the plotter to move to the middle of the paper with the pen down.
 
 ### Generate from image ##
+
 #### Script
 `python3 generate_from_img.py`
 
 #### Source
-![alt text](https://github.com/antonvh/L3onardo-plotter/blob/master/input/anton.jpg "Original image")
+![Original image](input/anton.jpg "Original image")
 
 #### Result
-![alt text](https://github.com/antonvh/L3onardo-plotter/blob/master/images/result.jpg "Result")
+![Result](images/result.jpg "Result")
 
 
 ### Generate from SVG ##
 Parses simple, single line svg files and creates a list of coordinates
 
+#### Source in Inkscape
+![Original svg with inkscape](images/input-svg.png "Original image")
+
+#### Result in point coordinates csv
+![Resulting CSV](images/result-svg.jpg "Result")
+
+
 ### Generate geometry ##
 Create the coordinate lists for squares and circles etc.
+
+#### Sqaure
+![Sqaure](images/result-square.jpg)
+
+#### Circle
+![Circle](images/result-circle.jpg)
+
+#### Grid
+![Grid](images/result-grid.jpg)
