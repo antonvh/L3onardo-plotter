@@ -80,7 +80,7 @@ del draw
 im_result.show()
 im_result.save('output/preview.jpg')
 
-pointlist.insert(0, [-1*PREVIEW_SIZE, 0])  # Lift pen before starting
+pointlist.insert(0, (-1*PREVIEW_SIZE, 0))  # Lift pen before starting
 pointlist.insert(2, (-1*PREVIEW_SIZE, 1*PREVIEW_SIZE))  # Lower pen befor first point
 
 # Output pointlist to files. One file for x's one for y's 

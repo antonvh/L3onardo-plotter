@@ -4,10 +4,12 @@ from svg import parse_path, Line
 import math
 from PIL import Image, ImageDraw
 
-IMG_SIZE = 500
-SVG_FILE = "input/amh.svg"
+IMG_SIZE = 1000
+SVG_FILE = "input/mfd2.svg"
 
 def read_svg(image_file):
+        # TODO: Also return the four corners of rects as points, not only paths.
+        
         # Open simple svg
         # To remove transformations from svg and convert objects to path, use:
         # inkscape --verb=EditSelectAll --verb=ObjectToPath --verb=SelectionUnGroup --verb=FileSave --verb=FileClose --verb=FileQuit my_image.svg
@@ -65,6 +67,7 @@ def fit_path(points):
             min_y, max_y = min([pix[1] for pix in points if type(pix) is not int]),max([pix[1] for pix in points if type(pix) is not int])
             return (min_x, min_y, max_x-min_x, max_y-min_y)
 
+        # Make sure the image fits on the canvas, normalize to (0...1) coordinates.
         (bbox_x, bbox_y, bbox_w, bbox_h) = get_bounding_box(points)
         if bbox_w > bbox_h:
             best_scale = 1/bbox_w
@@ -78,6 +81,7 @@ def fit_path(points):
         new_points = []
         for point in points:
             if type(point) is int:
+                # Starting a new curve. Left the pen with '-1' code.
                 new_points.append((-1, point))
             else:
                 new_points.append(((point[0]-bbox_x)*best_scale + x_offset,
@@ -122,17 +126,26 @@ if __name__ == '__main__':
     file_body = coordsfile.readlines()
     pointlist = []
     polygonlist = []
+    pen = 1
     for s_coord in file_body:
-        if ',' in s_coord:
-            coord = [float(c)*IMG_SIZE for c in s_coord.split(",")]
-            if coord[0] < 0:
-                    if coord[1] == 0:
-                            polygonlist += [pointlist]
-                            pointlist = []
-                    else:
-                            continue
-            else:
-                    pointlist += [tuple(coord)]
+        coords = [float(c) for c in s_coord.split(",")]
+        if len(coords) >= 2 and coords[0] >= 0:
+            # We have two regular coordinates
+            pointlist += [(coords[0] * IMG_SIZE, coords[1] * IMG_SIZE)]
+        
+        # When the first coordinate is -1.0 or we have three coordinates,
+        # there is a pen command. 0 means up, 1 means down.
+        if len(coords) == 2 and coords[0] < 0:
+            pen = int(coords[1])
+        elif len(coords) == 3:
+            pen = int(coords[2])
+
+        # Pen goes up. Save our polygon and start collecting a new one.
+        if pen == 0 and len(pointlist)>1:
+            polygonlist += [pointlist]
+            pointlist = []
+
+    # Add the last polygon if it wasn't terminated by a pen up.
     if pointlist:
             polygonlist += [pointlist]
     coordsfile.close()
