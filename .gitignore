@@ -3,3 +3,6 @@ input/mfd.svg
 input/mfd2.afdesign
 input/mfd2.svg
 output/mfd.csv
+*.jpg
+*.svg
+*.pyc
