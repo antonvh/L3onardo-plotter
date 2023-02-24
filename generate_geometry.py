@@ -1,113 +1,79 @@
 __author__ = "Anton's Mindstorms Hacks"
 
 from math import sin, cos, pi
-from PIL import Image, ImageDraw
+from coord_file_tools import generate_csv, generate_rtf, show_preview
 
-
-NUM_POINTS = 150
-PREVIEW_SIZE = 500
+CIRCLE_POINTS = 150
+SQUARE_SIDE_POINTS = 10
+MARGIN = 0.1
 CIRCLE = 1
 SQUARE = 2
 GRID = 3
-mode = SQUARE
+mode = CIRCLE
 
 pointlist = []
 
 if mode == CIRCLE:
     # Generate a list of (x,y) coordinates that make up a circle.
-    radius = PREVIEW_SIZE * 0.4
-    offset = PREVIEW_SIZE / 2
-    step = 2*pi/NUM_POINTS
-    pointlist = [(cos(step*p) * radius + offset, 
-                  sin(step * p) * radius + offset) 
-                 for p in range(NUM_POINTS + 1)]
+    offset = 0.5 # Center offset from top left
+    radius = offset - MARGIN
+    divisions = 2*pi/CIRCLE_POINTS
+    pointlist = [(cos(divisions*p) * radius + offset, 
+                  sin(divisions * p) * radius + offset) 
+                 for p in range(CIRCLE_POINTS + 1)]
 
 if mode == GRID:
     # Generate a list of coordinates that make a line grid.
 
-    step = PREVIEW_SIZE//10
-    for x in range(0, PREVIEW_SIZE + step, 2 * step):
+    divisions = 4
+    for x in range(0, divisions, 2):
         # Go down
-        for y in range(0, PREVIEW_SIZE + step, step):
-            pointlist += [(x, y)]
-        # Go back up if there's enough space
-        if x + step <= PREVIEW_SIZE:
-            for y in range(PREVIEW_SIZE, 0 - step, -step):
-                pointlist += [(x+step, y)]
+        for y in range(0, divisions+1):
+            pointlist += [(x/divisions, y/divisions)]
+        
+        # Go back up
+        for y in range(divisions, -1, -1):
+            pointlist += [((x+1)/divisions, y/divisions)]
+    
+    pointlist += [(-1, 0)]
+    pointlist += [(1,0)]
+    pointlist += [(-1, 1)]
 
-    for y in range(PREVIEW_SIZE, -1, -2 * step):
+    for y in range(divisions, -1, -2):
         # Go left
-        for x in range(PREVIEW_SIZE,  -1, -step):
-            pointlist += [(x, y)]
+        for x in range(divisions+1,  -1, -1):
+            pointlist += [(x/divisions, y/divisions)]
+
         # Go back right
-        if y - step >= 0:
-            for x in range(0, PREVIEW_SIZE+1, step):
-                pointlist += [(x, y-step)]
+        for x in range(0, divisions+1):
+            pointlist += [(x/divisions, (y-1)/divisions)]
 
 if mode == SQUARE:
-    steps = 10
-    margin = PREVIEW_SIZE // 10
-    step = (PREVIEW_SIZE - 2*margin) // steps
+    divisions = (1-2*MARGIN) / SQUARE_SIDE_POINTS
 
     # Left side
-    for i in range(steps):
-        pointlist += [(margin, margin+i*step)]
+    for i in range(SQUARE_SIDE_POINTS):
+        pointlist += [(MARGIN, MARGIN+i*divisions)]
 
     # Bottom side
-    for i in range(steps):
-        pointlist += [(margin + i * step, margin + steps * step)]
+    for i in range(SQUARE_SIDE_POINTS):
+        pointlist += [(MARGIN + i * divisions, MARGIN + SQUARE_SIDE_POINTS * divisions)]
 
     # Right side side
-    for i in range(steps, 0, -1):
-        pointlist += [(margin + steps * step, margin + i * step)]
+    for i in range(SQUARE_SIDE_POINTS, 0, -1):
+        pointlist += [(MARGIN + SQUARE_SIDE_POINTS * divisions, MARGIN + i * divisions)]
 
     # Bottom side
-    for i in range(steps, 0, -1):
-        pointlist += [(margin + i * step, margin)]
+    for i in range(SQUARE_SIDE_POINTS, 0, -1):
+        pointlist += [(MARGIN + i * divisions, MARGIN)]
 
     # Go back to the top left of the square
-    pointlist += [(margin, margin)]
+    pointlist += [(MARGIN, MARGIN)]
 
+pointlist.insert(0, (-1, 0))  # Lift pen before starting
+pointlist.insert(2, (-1, 1))  # Lower pen befor first point
 
-# Preview the result
-# New empty image
-im_result = Image.new("L", (PREVIEW_SIZE, PREVIEW_SIZE), color=200)
-# New drawing object
-draw = ImageDraw.Draw(im_result)
-draw.line(pointlist, fill=20)
-del draw
-# Showtime
-im_result.show()
-im_result.save('output/preview.jpg')
+generate_csv(pointlist)
+generate_rtf(pointlist)
+show_preview()
 
-pointlist.insert(0, (-1*PREVIEW_SIZE, 0))  # Lift pen before starting
-pointlist.insert(2, (-1*PREVIEW_SIZE, 1*PREVIEW_SIZE))  # Lower pen befor first point
-
-# Output pointlist to files. One file for x's one for y's 
-# since ev3 can only read one number per line.
-# Lego EV3 brick wants files to have an rtf extension, 
-# formatted as regular txt files. With ascii 13 as newline.
-xfile = open('output/x.rtf', 'w')
-yfile = open('output/y.rtf', 'w')
-
-# Ev3 can't determine file length. We have to spell it out.
-xfile.write(str(len(pointlist))+chr(13)) 
-
-for x, y in pointlist:
-    # Normalize the point cloud to 0.0 - 1.0 
-    # write each number on a new line
-    xfile.write("{:.4f}".format(float(x)/PREVIEW_SIZE)+chr(13))
-    yfile.write("{:.4f}".format(float(y)/PREVIEW_SIZE)+chr(13))
-
-xfile.close()
-yfile.close()
-
-# Wite the pointlist also to a single .csv file for other use
-coordsfile = open('output/coords.csv','w')
-coordsfile.write(str(len(pointlist))+"\n")
-coordsfile.writelines([str(float(x)/PREVIEW_SIZE) +
-                       ',' +
-                       str(float(y)/PREVIEW_SIZE) +
-                       '\n'
-                       for x, y in pointlist])
-coordsfile.close()

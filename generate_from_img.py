@@ -1,10 +1,11 @@
 __author__ = "Anton's Mindstorms Hacks"
 
 # using pillow
-from PIL import Image, ImageDraw, ImageOps
+from PIL import Image
 from random import randrange
 import time
 import numpy as np
+from coord_file_tools import generate_csv, generate_rtf, show_preview
 
 # settings
 NUM_POINTS = 15000
@@ -18,6 +19,7 @@ FILE_NAME = "input/anton.jpg"
 im = Image.open(FILE_NAME).convert("L")
 w, h = im.size
 pixels = im.load()
+size = min(w,h)
 
 
 # find NUM_POINTS points in dark areas and put them in pointlist#
@@ -41,58 +43,36 @@ print("Generating the dots...")
 t = time.time()
 for i in range(NUM_POINTS):
     pointlist += [find_another_dark_pixel(pixels, w, h)]
-print("Generated dots in:", time.time() - t, "seconds")
-
+print("Generated {} dots in: {} seconds".format(
+    len(pointlist), 
+    time.time() - t)
+    )
 
 # sort points randomish by vicinity #
-# Very lazy TSP. Slow too. :S
-# good_enough = (w * 0.01) ** 2   # Within 1% of the image width is good enough
 print("Connecting the dots...")
 t = time.time()
+
 def get_coord(n, arr):
-    return (tuple(arr[n]),)
+    return ([c/size for c in arr[n]],)
+
 pointlist = np.array(pointlist)
 best = 0
 sorted_pointlist = []
 while len(pointlist) > 1:
     p=pointlist[best]
     sorted_pointlist += get_coord(best, pointlist)
-    pointlist = np.delete(pointlist,best,axis=0)
+    pointlist = np.delete(pointlist, best, axis=0)
     
     # Calculate the square of the distances of p to all points in pointlist
     dists = ((pointlist-p)**2).sum(axis=1)
     # Closest point has the lowest squared distance.
     best = np.argmin(dists)
 
+sorted_pointlist += get_coord(best, pointlist)
 sorted_pointlist += get_coord(0, pointlist)
+
 print("Connected the dots in:", time.time() - t, "seconds")
 
-# Preview: draw lines connecting sorted points
-im_result = Image.new("L", im.size, color=200)
-draw = ImageDraw.Draw(im_result)
-draw.line(sorted_pointlist, fill=20, width=2)
-del draw
-im_result.show()
-im_result.save('output/preview.jpg')
-
-# output pointlist to files. One file for x's one for y's since ev3 can only read one number per line.
-# Lego EV3 brick wants files to have an rtf extension, formatted as regular txt files. With ascii 13 as newline. :S
-xfile = open('output/x.rtf', 'w')
-yfile = open('output/y.rtf', 'w')
-
-xfile.write(str(len(sorted_pointlist)) + chr(13))  # Ev3 can't determine file length. We have to spell it out.
-
-for x, y in sorted_pointlist:
-    # normalize the point cloud to 0.0 - 1.0 & write each number on a new line
-    xfile.write("{:.4f}".format(float(x) / w) + chr(13))
-    yfile.write("{:.4f}".format(float(y) / w) + chr(13))
-
-xfile.close()
-yfile.close()
-
-
-# Now write it to a single file for Ev3dev
-coordsfile = open('output/coords.csv', 'w')
-coordsfile.write(str(len(sorted_pointlist)) + "\n")
-coordsfile.writelines([str(float(x) / w) + ',' + str(float(y) / w) + '\n' for x, y in sorted_pointlist])
-coordsfile.close()
+generate_csv(sorted_pointlist)
+generate_rtf(sorted_pointlist)
+show_preview(thickness=2)
