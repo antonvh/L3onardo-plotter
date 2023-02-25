@@ -342,7 +342,7 @@ def hatch(IM,sc=16):
     return lines
 
 
-def sketch(path):
+def sketch(path, hatch_size=16, contour_simplify=1, draw_contours=True, draw_hatch=True, show_bitmap=False):
     IM = None
     possible = [path,"images/"+path,"images/"+path+".jpg","images/"+path+".png","images/"+path+".tif"]
     for p in possible:
