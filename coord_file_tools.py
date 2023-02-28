@@ -29,10 +29,11 @@ def generate_csv(pointlist, out_file="output/coords.csv"):
     coordsfile.close()
 
 
-def show_preview(file_path = "output/coords.csv", save_preview=True, width=500, height=500, thickness=1):
+def show_preview(file_path = "output/coords.csv", save_preview=True, width=500, thickness=1):
     IMG_SIZE = min(width, height)
     coordsfile = open(file_path, 'r')
     file_body = coordsfile.readlines()
+    max_y = 1.0
     pointlist = []
     polygonlist = []
     pen = 1
@@ -41,6 +42,8 @@ def show_preview(file_path = "output/coords.csv", save_preview=True, width=500, 
         if len(coords) >= 2 and coords[0] >= 0:
             # We have two regular coordinates
             pointlist += [(coords[0] * IMG_SIZE, coords[1] * IMG_SIZE)]
+            if coords[1] > max_y:
+                 max_y = coords[1]
         
         # When the first coordinate is -1.0 or we have three coordinates,
         # there is a pen command. 0 means up, 1 means down.
@@ -63,7 +66,7 @@ def show_preview(file_path = "output/coords.csv", save_preview=True, width=500, 
     coordsfile.close()
 
 
-    im_result = Image.new("L", (width, height), color=200)
+    im_result = Image.new("L", (width, round(width*max_y)), color=200)
     draw = ImageDraw.Draw(im_result)
     for poly in polygonlist:
             draw.line(poly, fill=60, width=thickness)
