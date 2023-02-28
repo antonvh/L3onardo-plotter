@@ -6,4 +6,5 @@ output/mfd.csv
 *.jpg
 *.svg
 *.pyc
+*.rtf
 __pycache__*
