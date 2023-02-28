@@ -24,9 +24,9 @@ Open the any of the four generate_* scripts and edit the parameters, and input f
 
 Once you have created the coords.csv file, you can send them to the MINDSTORMS brick and plot them. The easiest way is with ev3dev. 
 
-1. Create a new VS Code window and open the subdirectory 'pybricks_plot_csv'
-2. Connect to your MINDSTORMS EV3 brick
-3. Press F5 (Run and debug)
+1. Create a NEW VS Code window and open the subdirectory 'pybricks_plot_csv'.
+2. Connect to your MINDSTORMS EV3 brick in the ev3dev device browser.
+3. Press F5 (Run and debug).
 4. The robot will beep when the script has booted.
 5. With the direction keys you can run the motors.
 6. Ensure the pen is just above the paper.
@@ -34,7 +34,10 @@ Once you have created the coords.csv file, you can send them to the MINDSTORMS b
 6. Press center button to start plotting.
 
 ## Different coordinate generators
-The repository contains three generator scripts. They produce a csv file for use with a python plotter. The scripts also produce x.rtf and y.rtf files for use with the classic MINDSTORMS software.
+The repository contains three generator scripts. They produce a csv file for use with a python plotter. The scripts can also produce x.rtf and y.rtf files for use with the classic MINDSTORMS software.
+
+I find it the easiest to run the scripts with the run button in the top right corner in Visual Studio Code.
+![Run python script in VS Code](images/run_script.png)
 
 The CSV file has normalized coordinates. That means the numbers are between 0.0 and 1.0. When the first coordinate is -1.0, the second coordinate tells the pen to lift (0) or write (1). The python plotting script can also handle 3 long-tuples. So `0.5, 0.5, 1` would tell the plotter to move to the middle of the paper with the pen down.
 
@@ -44,9 +47,7 @@ Examples:
 `0.5, 0.0, 1` moves to the top center of the canvas and then lowers the pen
 
 ### Generate from image ##
-
-#### Script
-`python3 generate_from_img.py`
+Find dark pixels and connect them with lines.
 
 #### Source
 ![Original image](input/anton.jpg "Original image")
