@@ -3,7 +3,7 @@ __author__ = "Anton's Mindstorms Hacks"
 from math import sin, cos, pi
 from coord_file_tools import generate_csv, generate_rtf, show_preview
 
-CIRCLE_POINTS = 150
+CIRCLE_POINTS = 100
 SQUARE_SIDE_POINTS = 10
 MARGIN = 0.1
 CIRCLE = 1
@@ -18,9 +18,9 @@ if mode == CIRCLE:
     offset = 0.5 # Center offset from top left
     radius = offset - MARGIN
     divisions = 2*pi/CIRCLE_POINTS
-    pointlist = [(cos(divisions*p) * radius + offset, 
-                  sin(divisions * p) * radius + offset) 
-                 for p in range(CIRCLE_POINTS + 1)]
+    pointlist = [(sin(divisions*p) * radius + offset, 
+                  -cos(divisions * p) * radius + offset) 
+                 for p in range(CIRCLE_POINTS+1)]
 
 if mode == GRID:
     # Generate a list of coordinates that make a line grid.
