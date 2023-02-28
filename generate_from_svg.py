@@ -5,11 +5,9 @@ from coord_file_tools import generate_rtf, generate_csv, show_preview
 import math
 
 IMG_SIZE = 1000
-SVG_FILE = "input/mfd5.svg"
+SVG_FILE = "input/amh.svg"
 
 def read_svg(image_file):
-        # TODO: Also return the four corners of rects as points, not only paths.
-        
         # Open simple svg
         # To remove transformations from svg and convert objects to path, use:
         # inkscape --verb=EditSelectAll --verb=ObjectToPath --verb=SelectionUnGroup --verb=FileSave --verb=FileClose --verb=FileQuit my_image.svg
